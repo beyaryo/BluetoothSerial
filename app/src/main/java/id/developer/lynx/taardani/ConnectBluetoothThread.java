@@ -15,14 +15,14 @@ import java.util.UUID;
 public class ConnectBluetoothThread extends Thread {
 
     private BluetoothSocket mSocket;
-    private BluetoothDevice mDevice;
     private Context context;
+    private String intentFilter;
     private SendReadBluetoothThread sendReadThread;
 
-    public ConnectBluetoothThread(Context context, BluetoothDevice device){
+    public ConnectBluetoothThread(Context context, BluetoothDevice device, String intentFilter){
         BluetoothSocket temp = null;
         this.context = context;
-        this.mDevice = device;
+        this.intentFilter = intentFilter;
 
         try{
             temp = device.createRfcommSocketToServiceRecord(device.getUuids()[0].getUuid());
@@ -35,7 +35,7 @@ public class ConnectBluetoothThread extends Thread {
 
     @Override
     public void run(){
-        Intent intentStatus = new Intent(Utils.RECEIVER_INTENT_MAIN);
+        Intent intentStatus = new Intent(intentFilter);
 
         try{
             mSocket.connect();
@@ -43,7 +43,7 @@ public class ConnectBluetoothThread extends Thread {
             intentStatus.putExtra(Utils.PARAM_STATUS_CONNECTED, true);
             context.sendBroadcast(intentStatus);
 
-            sendReadThread = new SendReadBluetoothThread(mSocket);
+            sendReadThread = new SendReadBluetoothThread(context, mSocket, intentFilter);
             sendReadThread.start();
         }catch (Exception e){
             try{
@@ -56,10 +56,6 @@ public class ConnectBluetoothThread extends Thread {
         }
     }
 
-    public void send(int data){
-        sendReadThread.send(data);
-    }
-
     public void send(byte[] bytes){
         sendReadThread.send(bytes);
     }
@@ -67,6 +63,9 @@ public class ConnectBluetoothThread extends Thread {
     public void cancel(){
         try{
             mSocket.close();
+            if(sendReadThread != null){
+                sendReadThread.cancel();
+            }
         }catch (Exception e){
             Log.d(Utils.LOG_TAG, "This is ConnectBluetoothThread => cancel error : " +e.getMessage());
         }

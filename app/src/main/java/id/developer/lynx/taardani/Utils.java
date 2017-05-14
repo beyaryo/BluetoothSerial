@@ -8,8 +8,10 @@ public class Utils {
 
     public static final String LOG_TAG = "TA Ardani";
     public static final String ARDUINO_ID = "81gu";
+    public static final String RECEIVER_CONNECTIVITY_AUTOCONNECT = "autoconnect_receiver_connectivity";
     public static final String RECEIVER_INTENT_MAIN = "main_receiver_intent";
 
     public static final String PARAM_STATUS_CONNECTED = "status_connected";
     public static final String PARAM_DEVICE = "device";
+    public static final String PARAM_SERIAL_VALUE = "serial_value";
 }

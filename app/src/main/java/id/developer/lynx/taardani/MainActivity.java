@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 PD.setMessage("Connecting to " +selectedDevice.getName());
                 PD.show();
 
-                connectThread = new ConnectBluetoothThread(this, selectedDevice);
+                connectThread = new ConnectBluetoothThread(this, selectedDevice, Utils.RECEIVER_INTENT_MAIN);
                 connectThread.start();
             }
         }else{
